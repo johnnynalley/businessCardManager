@@ -28,4 +28,4 @@ def get_card_text():
 
 
 if __name__ == '__main__':
-    print(get_card_text())  # TODO find a way to handle blank outputs
+    print(get_card_text())

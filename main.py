@@ -6,15 +6,17 @@ root = Tk()
 root.withdraw()
 
 
-# Gets the path of the desired business card
-while True:
-    try:
-        path = filedialog.askopenfilename()
-        break
 
-    except IsADirectoryError:
-        input("Press Enter to try again. ")
 
+def get_card():
+    # Gets the path of the desired business card
+    while True:
+        try:
+            path = filedialog.askopenfilename()
+            break
+
+        except IsADirectoryError:
+            input("Press Enter to try again. ")
 
 # Gets the text from the selected image
 def get_card_text():

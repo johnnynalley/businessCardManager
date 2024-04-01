@@ -1,24 +1,25 @@
+import pytesseract
 import tkinter.filedialog
-from tkinter import filedialog, Tk
+from tkinter import Tk
+import json
+
 from PIL import Image
-import pytesseract, shutil
 
 root = Tk()
 root.withdraw()
 
-cards = [""]
-currentCard = cards[0]
-
+cards = {
+}
 
 # Saves the currently open business card
-def save_business_card():
+def save_current_card():
     global cards, currentCard
 
     while True:
         try:
             input("Press Enter to save the businessCard ")
             businessCard = tkinter.filedialog.asksaveasfilename()
-            cards.append(businessCard)
+            cards[businessCard] = businessCard
             currentCard = cards[-1]
             return businessCard
 
@@ -31,9 +32,16 @@ def open_business_card():
     global cards
 
     while True:
-        for x in range(len(cards)):
-            print(cards)
+        print(cards)
 
+        fileInput = input("Which card would you like to access? ")
+        break
+
+    if fileInput:
+        global currentCard
+
+        currentCard = cards[fileInput]
+        return currentCard
 
 # Gets the text from the selected image
 def get_card_text():
@@ -46,5 +54,20 @@ def get_card_text():
         return imageText
 
 
+def save_all_cards():
+    global cards
+
+    with (open('cards.json', 'w') as file):
+        json.dump(cards, file)
+
+
+
+
+currentCard = ""
+
 if __name__ == '__main__':
+    currentCard = "./cards/test_card_1"
+
+    save_current_card()
+
     print(get_card_text())

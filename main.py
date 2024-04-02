@@ -17,6 +17,10 @@ class Card:
         self.card_description = card_description
         self.card_image = card_image
 
+    def create_card(self):
+        self.card_name = input("Card Name: ")
+        self.card_description = input("Card Description: ")
+        self.card_image = tkinter.filedialog.askopenfilename()
 
 
 with open("cards.json", "r") as file:

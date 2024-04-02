@@ -10,6 +10,15 @@ from PIL import Image
 root = Tk()
 root.withdraw()
 
+
+class Card:
+    def __init__(self, card_name, card_description, card_image):
+        self.card_name = card_name
+        self.card_description = card_description
+        self.card_image = card_image
+
+
+
 with open("cards.json", "r") as file:
     cards = json.load(file)
 
@@ -27,7 +36,7 @@ def import_card():
         cards[os.path.basename(cardPath)] = "./cards/" + os.path.basename(cardPath)
 
         save_all_cards()
-        print(f"Successfully imported {os.path.basename(cardPath)}, and is now saved to ./cards/" + os.path.basename(
+        print(f"Successfully imported {os.path.basename(cardPath)}, and is now saved to cards/" + os.path.basename(
             cardPath))
         return cards[os.path.basename(cardPath)]
 

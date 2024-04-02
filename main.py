@@ -3,6 +3,7 @@ import tkinter.filedialog
 from tkinter import Tk
 import json
 import os
+import shutil
 
 from PIL import Image
 
@@ -17,89 +18,112 @@ with open("cards.json", "r") as file:
 def import_card():
     global cards
 
-    while True:
-        try:
-            input("Press Enter to save the card ")
-            cardPath = tkinter.filedialog.asksaveasfilename()
-            cards[os.path.basename(cardPath)] = cardPath
+    try:
+        cardPath = tkinter.filedialog.askopenfilename()
+        print(cardPath)
 
-            save_all_cards()
-            print(f"Successfully imported {os.path.basename(cardPath)}, and is now saved to {cardPath}")
-            return cards[os.path.basename(cardPath)]
+        shutil.copy(cardPath, "./cards/")
 
-        except IsADirectoryError:
-            input("Press Enter to try again. ")
+        cards[os.path.basename(cardPath)] = "./cards/" + os.path.basename(cardPath)
+
+        save_all_cards()
+        print(f"Successfully imported {os.path.basename(cardPath)}, and is now saved to ./cards/" + os.path.basename(
+            cardPath))
+        return cards[os.path.basename(cardPath)]
+
+    except (IsADirectoryError, FileNotFoundError) as error:
+        return "Failed to import card, please try again. "
 
 
 # Gets the path of the desired business card
-def open_business_card():
-    global cards
-
-    while True:
-        print(cards)
-
-        try:
-            fileInput = input("Which card would you like to access? ")
-            break
-
-        except KeyError:
-            print("Not a valid input. Please try again. ")
-
-    if fileInput:
-        global currentCard
-
-        currentCard = cards[fileInput]
-        return currentCard
+# def open_business_card():
+#     global cards
+#
+#     while True:
+#         print(cards)
+#
+#         try:
+#             fileInput = input("Which card would you like to access? ")
+#             break
+#
+#         except KeyError:
+#             print("Not a valid input. Please try again. ")
+#
+#     if fileInput:
+#         return cards[fileInput]
 
 
 # Gets the text from the selected image
 def get_card_text():
-    imageText = pytesseract.image_to_string(Image.open(currentCard))
+    global cards
 
-    if len(imageText) == 0:
+    card_name = input("Which card would you like to get text from? ")
+
+    image_text = pytesseract.image_to_string(Image.open(cards[card_name]))
+
+    if len(image_text) == 0:
         return "I was unable to find any text in the image."
 
     else:
-        return imageText
+        return image_text
 
 
 def save_all_cards():
     global cards
 
-    with (open('cards.json', 'w') as f):
-        json.dump(cards, f)
+    with (open('cards.json', 'w') as jsonFile):
+        json.dump(cards, jsonFile)
+
+
+def list_all_cards():
+    global cards
+
+    with (open('cards.json', 'r') as jsonFile):
+        cards = json.load(jsonFile)
+    formatted_cards = json.dumps(cards, indent=2)
+
+    print(formatted_cards)
 
 
 def help():
     print("import: imports your cards\n"
-          "open: opens a card\n"
+          # "open: opens a card\n"
           "save: saves all cards\n"
-          "quit: quits the program")
+          "list: lists all cards\n"
+          "text: attempts to get text from the selected card using OCR\n"
+          "quit: quits the program\n")
 
 
 def main():
     global cards, currentCard
 
     while True:
-        choice = input().lower
+        choice = input("Enter your choice: ")
+
         try:
-            if choice == "help" or "h":
+            if choice == "help" or choice == "h":
                 help()
 
-            elif choice == "import":
+            elif choice == "import" or choice == "f":
+                choice = ""
                 import_card()
 
-            elif choice == "open":
-                open_business_card()
+            # elif choice == "open" or choice == "o":
+            #     open_business_card()
 
-            elif choice == "save all":
+            elif choice == "save" or choice == "s":
                 save_all_cards()
 
-            elif choice == "quit/q":
+            elif choice == "list" or choice == "l":
+                list_all_cards()
+
+            elif choice == "text" or choice == "t":
+                print(get_card_text())
+
+            elif choice == "quit" or choice == "q":
                 quit()
 
         except ValueError:
-
             print("Not a valid input. Please try again. ")
 
 

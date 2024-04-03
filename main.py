@@ -10,60 +10,24 @@ from PIL import Image
 root = Tk()
 root.withdraw()
 
-
-class Card:
-    def __init__(self, card_name, card_description, card_image):
-        self.card_name = card_name
-        self.card_description = card_description
-        self.card_image = card_image
-
-    def create_card(self):
-        self.card_name = input("Card Name: ")
-        self.card_description = input("Card Description: ")
-        self.card_image = tkinter.filedialog.askopenfilename()
-
-
+# Opens the cards.json file and imports the data as a dictionary
 with open("cards.json", "r") as file:
     cards = json.load(file)
 
 
-# Imports a card
-def import_card():
+def create_card():
     global cards
 
-    try:
-        cardPath = tkinter.filedialog.askopenfilename()
-        print(cardPath)
+    card_name = input("Card Name: ")
+    card_description = input("Card Description: ")
+    card_image = tkinter.filedialog.askopenfilename()
 
-        shutil.copy(cardPath, "./cards/")
+    cards[card_name] = {"Card Name": card_name, "Card Description": card_description, "Card Image": card_image}
 
-        cards[os.path.basename(cardPath)] = "./cards/" + os.path.basename(cardPath)
+    save_all_cards()
 
-        save_all_cards()
-        print(f"Successfully imported {os.path.basename(cardPath)}, and is now saved to cards/" + os.path.basename(
-            cardPath))
-        return cards[os.path.basename(cardPath)]
-
-    except (IsADirectoryError, FileNotFoundError) as error:
-        return "Failed to import card, please try again. "
-
-
-# Gets the path of the desired business card
-# def open_business_card():
-#     global cards
-#
-#     while True:
-#         print(cards)
-#
-#         try:
-#             fileInput = input("Which card would you like to access? ")
-#             break
-#
-#         except KeyError:
-#             print("Not a valid input. Please try again. ")
-#
-#     if fileInput:
-#         return cards[fileInput]
+    card = cards[card_name]
+    return card
 
 
 # Gets the text from the selected image
@@ -72,7 +36,7 @@ def get_card_text():
 
     card_name = input("Which card would you like to get text from? ")
 
-    image_text = pytesseract.image_to_string(Image.open(cards[card_name]))
+    image_text = pytesseract.image_to_string(Image.open(cards[card_name]["Card Image"]))
 
     if len(image_text) == 0:
         return "I was unable to find any text in the image."
@@ -84,7 +48,7 @@ def get_card_text():
 def save_all_cards():
     global cards
 
-    with (open('cards.json', 'w') as jsonFile):
+    with open("cards.json", "w") as jsonFile:
         json.dump(cards, jsonFile)
 
 
@@ -93,14 +57,12 @@ def list_all_cards():
 
     with (open('cards.json', 'r') as jsonFile):
         cards = json.load(jsonFile)
-    formatted_cards = json.dumps(cards, indent=2)
 
-    print(formatted_cards)
+    print(json.dumps(cards, indent=4))
 
 
 def help():
-    print("import: imports your cards\n"
-          # "open: opens a card\n"
+    print("create: creates a card\n"
           "save: saves all cards\n"
           "list: lists all cards\n"
           "text: attempts to get text from the selected card using OCR\n"
@@ -108,7 +70,7 @@ def help():
 
 
 def main():
-    global cards, currentCard
+    global cards
 
     while True:
         choice = input("Enter your choice: ")
@@ -117,12 +79,8 @@ def main():
             if choice == "help" or choice == "h":
                 help()
 
-            elif choice == "import" or choice == "f":
-                choice = ""
-                import_card()
-
-            # elif choice == "open" or choice == "o":
-            #     open_business_card()
+            elif choice == "create" or choice == "c":
+                create_card()
 
             elif choice == "save" or choice == "s":
                 save_all_cards()
@@ -135,6 +93,8 @@ def main():
 
             elif choice == "quit" or choice == "q":
                 quit()
+            else:
+                print("Invalid")
 
         except ValueError:
             print("Not a valid input. Please try again. ")

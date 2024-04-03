@@ -11,7 +11,7 @@ from PIL import Image
 root = Tk()
 root.withdraw()
 
-card_destination = "./cards/"
+card_destination = os.path.abspath("./cards")
 
 # Opens the cards.json file and imports the data as a dictionary
 with open("cards.json", "r") as file:
@@ -28,7 +28,7 @@ def create_card():
 
     # Copies the card from the original destination to the new destination defined in card_destination
     shutil.copy2(original_image_destination, card_destination)
-    card_image = card_destination + os.path.basename(original_image_destination)
+    card_image = card_destination + "/" + os.path.basename(original_image_destination)
     print("New Image Destination: " + card_image)
 
     card_creation_date = datetime.now()
@@ -54,19 +54,19 @@ def create_card():
 def get_card_text():
     global cards
 
-    card_name = input("Which card would you like to get text from? ")
+    card_name = input("Which card would you like to get text from?\n")
 
     try:
         image_text = pytesseract.image_to_string(Image.open(cards[card_name]["Card Image"]))
 
         if len(image_text) == 0:
-            return "I was unable to find any text in the image."
+            return "I was unable to find any text in the image.\n"
 
         else:
             return image_text
 
     except KeyError:
-        print("Failed to get card text. Please try again.")
+        print("Failed to get card text. Please try again.\n")
         return
 
 

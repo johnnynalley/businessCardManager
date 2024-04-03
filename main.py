@@ -100,7 +100,7 @@ def delete_card():
 
     while True:
         list_all_cards()
-        card_name = input("Which card would you like to delete? Type \"q\" to quit.")
+        card_name = input("Which card would you like to delete? Type \"q\" to quit.\n")
         if card_name == "q":
             return
 

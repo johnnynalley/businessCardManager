@@ -98,9 +98,11 @@ def delete_card():
 
         if card_name not in cards:
             print("Successfully deleted " + card_name + ". ")
+            return
 
         else:
             print("Failed to delete " + card_name + ". Please try again. ")
+            continue
 
 
 def main():

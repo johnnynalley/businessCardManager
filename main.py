@@ -1,12 +1,11 @@
-from datetime import datetime
-
-import pytesseract
-import tkinter.filedialog
-from tkinter import Tk
 import json
 import os
 import shutil
+import tkinter.filedialog
+from datetime import datetime
+from tkinter import Tk
 
+import pytesseract
 from PIL import Image
 
 root = Tk()
@@ -57,13 +56,18 @@ def get_card_text():
 
     card_name = input("Which card would you like to get text from? ")
 
-    image_text = pytesseract.image_to_string(Image.open(cards[card_name]["Card Image"]))
+    try:
+        image_text = pytesseract.image_to_string(Image.open(cards[card_name]["Card Image"]))
 
-    if len(image_text) == 0:
-        return "I was unable to find any text in the image."
+        if len(image_text) == 0:
+            return "I was unable to find any text in the image."
 
-    else:
-        return image_text
+        else:
+            return image_text
+
+    except KeyError:
+        print("Failed to get card text. Please try again.")
+        return
 
 
 def save_all_cards():

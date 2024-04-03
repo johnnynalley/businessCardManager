@@ -23,13 +23,16 @@ def create_card():
     card_name = input("Card Name: ")
     card_description = input("Card Description: ")
     original_image_destination = tkinter.filedialog.askopenfilename()
+    print("Original Image Destination: " + original_image_destination)
 
+    # Copies the card from the original destination to the new destination defined in card_destination
     shutil.copy2(original_image_destination, card_destination)
-
     card_image = card_destination + os.path.basename(original_image_destination)
+    print("New Image Destination: " + card_image)
 
+    # Creates nested dictionary under the cards dictionary with keys for the card's name, description, and image
+    # destination, and then saves the cards.
     cards[card_name] = {"Card Name": card_name, "Card Description": card_description, "Card Image": card_image}
-
     save_all_cards()
 
     return cards[card_name]
@@ -80,8 +83,11 @@ def delete_card():
 
     while True:
         list_all_cards()
-        card_name = input("Which card would you like to delete: ")
-        if card_name not in cards:
+        card_name = input("Which card would you like to delete? Type \"q\" to quit.")
+        if card_name == "q":
+            return
+
+        elif card_name not in cards:
             print(card_name + "was not found in your cards list. Please verify the filename of the card you wish to "
                               "delete and try again")
             continue
@@ -92,6 +98,9 @@ def delete_card():
 
         if card_name not in cards:
             print("Successfully deleted " + card_name + ". ")
+
+        else:
+            print("Failed to delete " + card_name + ". Please try again. ")
 
 
 def main():

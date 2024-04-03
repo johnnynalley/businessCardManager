@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytesseract
 import tkinter.filedialog
 from tkinter import Tk
@@ -30,11 +32,22 @@ def create_card():
     card_image = card_destination + os.path.basename(original_image_destination)
     print("New Image Destination: " + card_image)
 
+    card_creation_date = datetime.now()
+
     # Creates nested dictionary under the cards dictionary with keys for the card's name, description, and image
     # destination, and then saves the cards.
-    cards[card_name] = {"Card Name": card_name, "Card Description": card_description, "Card Image": card_image}
+    cards[card_name] = {"Card Name": card_name,
+                        "Card Description": card_description,
+                        "Card Image": card_image,
+                        "Card Date": card_creation_date
+                        }
     save_all_cards()
 
+    if card_name not in cards:
+        print("Failed to add " + card_name + ". Please try again. ")
+
+    else:
+        print("Successfully added " + card_name)
     return cards[card_name]
 
 
@@ -57,7 +70,7 @@ def save_all_cards():
     global cards
 
     with open("cards.json", "w") as jsonFile:
-        json.dump(cards, jsonFile)
+        json.dump(cards, jsonFile, indent=4, default=str)
 
 
 def list_all_cards():

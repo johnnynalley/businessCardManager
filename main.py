@@ -10,6 +10,8 @@ from PIL import Image
 root = Tk()
 root.withdraw()
 
+card_destination = "./cards/"
+
 # Opens the cards.json file and imports the data as a dictionary
 with open("cards.json", "r") as file:
     cards = json.load(file)
@@ -20,14 +22,17 @@ def create_card():
 
     card_name = input("Card Name: ")
     card_description = input("Card Description: ")
-    card_image = tkinter.filedialog.askopenfilename()
+    original_image_destination = tkinter.filedialog.askopenfilename()
+
+    shutil.copy2(original_image_destination, card_destination)
+
+    card_image = card_destination + os.path.basename(original_image_destination)
 
     cards[card_name] = {"Card Name": card_name, "Card Description": card_description, "Card Image": card_image}
 
     save_all_cards()
 
-    card = cards[card_name]
-    return card
+    return cards[card_name]
 
 
 # Gets the text from the selected image
@@ -62,11 +67,32 @@ def list_all_cards():
 
 
 def help():
-    print("create: creates a card\n"
-          "save: saves all cards\n"
-          "list: lists all cards\n"
-          "text: attempts to get text from the selected card using OCR\n"
-          "quit: quits the program\n")
+    print("create/c: creates a card\n"
+          "save/s: saves all cards\n"
+          "delete/d: deletes selected card\n"
+          "list/l: lists all cards\n"
+          "text/t: attempts to get text from the selected card using OCR\n"
+          "quit/q: quits the program\n")
+
+
+def delete_card():
+    global cards
+    list_all_cards()
+
+    while True:
+        card_name = input("Which card would you like to delete: ")
+        if card_name not in cards:
+            print(card_name + "was not found in your cards list. Please verify the filename of the card you wish to "
+                              "delete and try again")
+            continue
+
+        else:
+            del cards[card_name]
+            save_all_cards()
+            list_all_cards()
+
+        if card_name not in cards:
+            print("Failed to delete card. Please try again.")
 
 
 def main():
@@ -87,6 +113,9 @@ def main():
 
             elif choice == "list" or choice == "l":
                 list_all_cards()
+
+            elif choice == "delete" or choice == "d":
+                delete_card()
 
             elif choice == "text" or choice == "t":
                 print(get_card_text())

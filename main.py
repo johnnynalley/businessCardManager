@@ -77,9 +77,9 @@ def help():
 
 def delete_card():
     global cards
-    list_all_cards()
 
     while True:
+        list_all_cards()
         card_name = input("Which card would you like to delete: ")
         if card_name not in cards:
             print(card_name + "was not found in your cards list. Please verify the filename of the card you wish to "
@@ -89,10 +89,9 @@ def delete_card():
         else:
             del cards[card_name]
             save_all_cards()
-            list_all_cards()
 
         if card_name not in cards:
-            print("Failed to delete card. Please try again.")
+            print("Successfully deleted " + card_name + ". ")
 
 
 def main():

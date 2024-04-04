@@ -11,7 +11,8 @@ from PIL import Image
 root = Tk()
 root.withdraw()
 
-card_destination = os.path.abspath("./cards")
+card_destination = os.path.dirname(__file__)
+card_destination = os.path.join(card_destination, "cards")
 
 # Opens the cards.json file and imports the data as a dictionary
 with open("cards.json", "r") as file:
@@ -28,8 +29,8 @@ def create_card():
 
     # Copies the card from the original destination to the new destination defined in card_destination
     shutil.copy2(original_image_destination, card_destination)
-    card_image = card_destination + "/" + os.path.basename(original_image_destination)
-    print("New Image Destination: " + card_image)
+    card_image_path = os.path.join(card_destination, os.path.basename(original_image_destination))
+    print("New Image Destination: " + card_image_path)
 
     card_creation_date = datetime.now()
 
@@ -37,7 +38,7 @@ def create_card():
     # destination, and then saves the cards.
     cards[card_name] = {"Card Name": card_name,
                         "Card Description": card_description,
-                        "Card Image": card_image,
+                        "Card Image": card_image_path,
                         "Card Date": card_creation_date
                         }
     save_all_cards()
@@ -111,13 +112,15 @@ def delete_card():
 
         else:
             # Delete image in cards folder
-            card_image = cards[card_name]['Card Image']
+            card_image_path = cards[card_name]['Card Image']
+
+            print(card_image_path)
 
             try:
-                os.remove(cards[card_name][card_image])
+                os.remove(cards[card_name][card_image_path])
 
             except KeyError:
-                print(f"Failed to delete {cards[card_name][card_image]}. Please try again.\n")
+                print(f"Failed to delete {cards[card_name][card_image_path]}. Please try again.\n")
                 pass
 
             del cards[card_name]

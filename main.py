@@ -87,11 +87,12 @@ def list_all_cards():
 
 def help():
     print("create/c: creates a card\n"
-          "save/s: saves all cards\n"
           "delete/d: deletes selected card\n"
+          "save/s: saves all cards\n"
+          "quit/q: quits the program\n"
+          "image/i: shows the image of a card\n"
           "list/l: lists all cards\n"
-          "text/t: attempts to get text from the selected card using OCR\n"
-          "quit/q: quits the program\n")
+          "text/t: attempts to get text from the selected card using OCR\n")
 
 
 def delete_card():
@@ -152,7 +153,6 @@ def show_card_image():
 
 
 # Opens the cards.json file and imports the data as a dictionary
-
 try:
     with open("cards.json", "r") as file:
         cards = json.load(file)

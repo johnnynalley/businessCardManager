@@ -14,10 +14,6 @@ root.withdraw()
 card_destination = os.path.dirname(__file__)
 card_destination = os.path.join(card_destination, "cards")
 
-# Opens the cards.json file and imports the data as a dictionary
-with open("cards.json", "r") as file:
-    cards = json.load(file)
-
 
 def create_card():
     global cards
@@ -134,6 +130,21 @@ def delete_card():
         else:
             print("Failed to delete " + card_name + ". Please try again. ")
             continue
+
+
+# Opens the cards.json file and imports the data as a dictionary
+
+try:
+    with open("cards.json", "r") as file:
+        cards = json.load(file)
+    print("cards.json already exists.")
+
+except json.decoder.JSONDecodeError:
+    print("cards.json does not exist.")
+    with open("cards.json", "w") as file:
+        print("Creating the cards.json file.")
+        cards = {}
+        json.dump(cards, file)
 
 
 def main():

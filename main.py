@@ -110,9 +110,20 @@ def delete_card():
             continue
 
         else:
+            # Delete image in cards folder
+            card_image = cards[card_name]['Card Image']
+
+            try:
+                os.remove(cards[card_name][card_image])
+
+            except KeyError:
+                print(f"Failed to delete {cards[card_name][card_image]}. Please try again.\n")
+                pass
+
             del cards[card_name]
             save_all_cards()
 
+        # Checks if the card was successfully deleted and outputs the result
         if card_name not in cards:
             print("Successfully deleted " + card_name + ". ")
             return

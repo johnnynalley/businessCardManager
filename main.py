@@ -15,11 +15,14 @@ card_destination = os.path.dirname(__file__)
 card_destination = os.path.join(card_destination, "cards")
 
 
+# Creates a new card, and copies the provided image path to the app's own path, and adds data for the card
 def create_card():
     global cards
 
+    # Assigns name, description, creation date, and the original image destination
     card_name = input("Card Name: ")
     card_description = input("Card Description: ")
+    card_creation_date = datetime.now()
     original_image_destination = tkinter.filedialog.askopenfilename()
     print("Original Image Destination: " + original_image_destination)
 
@@ -28,17 +31,16 @@ def create_card():
     card_image_path = os.path.join(card_destination, os.path.basename(original_image_destination))
     print("New Image Destination: " + card_image_path)
 
-    card_creation_date = datetime.now()
-
-    # Creates nested dictionary under the cards dictionary with keys for the card's name, description, and image
-    # destination, and then saves the cards.
+    # Creates nested dictionary under the cards dictionary with keys for the card's name, description, creation
+    # date, and image destination, and then saves the cards.
     cards[card_name] = {"Card Name": card_name,
                         "Card Description": card_description,
-                        "Card Image": card_image_path,
-                        "Card Date": card_creation_date
+                        "Card Date": card_creation_date,
+                        "Card Image": card_image_path
                         }
     save_all_cards()
 
+    # Checks to see if the new card is added into the dictionary
     if card_name not in cards:
         print("Failed to add " + card_name + ". Please try again. ")
 
@@ -102,7 +104,7 @@ def delete_card():
             return
 
         elif card_name not in cards:
-            print(card_name + "was not found in your cards list. Please verify the filename of the card you wish to "
+            print(card_name + " was not found in your cards list. Please verify the filename of the card you wish to "
                               "delete and try again")
             continue
 
@@ -113,7 +115,7 @@ def delete_card():
             print(card_image_path)
 
             try:
-                os.remove(cards[card_name][card_image_path])
+                os.remove(card_image_path)
 
             except KeyError:
                 print(f"Failed to delete {cards[card_name][card_image_path]}. Please try again.\n")

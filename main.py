@@ -132,17 +132,31 @@ def delete_card():
             continue
 
 
+def show_card_image():
+    global cards
+
+    user_response = input("Which card would you like to show? Type \"q\" to quit.\n")
+
+    if user_response == "q":
+        return
+
+    elif os.path.exists(cards[user_response]['Card Image']):
+        card_image_path = cards[user_response]['Card Image']
+        image = Image.open(card_image_path)
+        image.show()
+
+    else:
+        print("Invalid card image. Please try again.")
+
+
 # Opens the cards.json file and imports the data as a dictionary
 
 try:
     with open("cards.json", "r") as file:
         cards = json.load(file)
-    print("cards.json already exists.")
 
 except json.decoder.JSONDecodeError:
-    print("cards.json does not exist.")
     with open("cards.json", "w") as file:
-        print("Creating the cards.json file.")
         cards = {}
         json.dump(cards, file)
 
@@ -169,11 +183,15 @@ def main():
             elif choice == "delete" or choice == "d":
                 delete_card()
 
+            elif choice == "quit" or choice == "q":
+                quit()
+
+            elif choice == "image" or choice == "i":
+                show_card_image()
+
             elif choice == "text" or choice == "t":
                 print(get_card_text())
 
-            elif choice == "quit" or choice == "q":
-                quit()
             else:
                 print("Invalid")
 
